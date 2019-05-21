@@ -320,7 +320,7 @@ export class Visitor{
 					let name = `p${this.parameterSeed++}`;
 					let value = Literal.convert(params[1].value, params[1].raw);
 					this.parameters.set(name, `%${value}%`);
-					this.where += " like ?";
+					this.where += " like '?'";
 				}else this.where += ` like '%${SQLLiteral.convert(params[1].value, params[1].raw).slice(1, -1)}%'`;
 				break;
 			case "endswith":
@@ -329,7 +329,7 @@ export class Visitor{
 					let name = `p${this.parameterSeed++}`;
 					let value = Literal.convert(params[1].value, params[1].raw);
 					this.parameters.set(name, `%${value}`);
-					this.where += " like ?";
+					this.where += " like '?'";
 				}else this.where += ` like '%${SQLLiteral.convert(params[1].value, params[1].raw).slice(1, -1)}'`;
 				break;
 			case "startswith":
@@ -338,7 +338,7 @@ export class Visitor{
 					let name = `p${this.parameterSeed++}`;
 					let value = Literal.convert(params[1].value, params[1].raw);
 					this.parameters.set(name, `${value}%`);
-					this.where += " like ?";
+					this.where += " like '?'";
 				}else this.where += ` like '${SQLLiteral.convert(params[1].value, params[1].raw).slice(1, -1)}%'`;
 				break;
 			case "indexof":
