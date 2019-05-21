@@ -52,7 +52,7 @@ export class Visitor{
 	}
 
 	from(table:string){
-		let sql = `SELECT ${this.select} FROM [${table}] WHERE ${this.where} ORDER BY ${this.orderby}`;
+		let sql = `SELECT ${this.select} FROM \`${table}\` WHERE ${this.where} ORDER BY ${this.orderby}`;
 		switch (this.type){
       case SQLLang.Oracle:
 			case SQLLang.MsSql:
@@ -201,7 +201,7 @@ export class Visitor{
 
 	protected VisitSelectItem(node:Token, context:any){
 		let item = node.raw.replace(/\//g, '.');
-		this.select += `[${item}]`;
+		this.select += `\`${item}\``;
 	}
 
 	protected VisitAndExpression(node:Token, context:any){
@@ -250,7 +250,7 @@ export class Visitor{
 	}
 
 	protected VisitODataIdentifier(node:Token, context:any){
-		this[context.target] += `[${node.value.name}]`;
+		this[context.target] += `\`${node.value.name}\``;
 		context.identifier = node.value.name;
 	}
 
@@ -259,9 +259,9 @@ export class Visitor{
 		this.where += " = ";
 		this.Visit(node.value.right, context);
 		if (this.options.useParameters && context.literal == null){
-			this.where = this.where.replace(/= \?$/, "IS NULL").replace(new RegExp(`\\? = \\[${context.identifier}\\]$`), `[${context.identifier}] IS NULL`);
+			this.where = this.where.replace(/= \?$/, "IS NULL").replace(new RegExp(`\\? = \\\`${context.identifier}\\\`$`), `\`${context.identifier}\` IS NULL`);
 		}else if (context.literal == "NULL"){
-			this.where = this.where.replace(/= NULL$/, "IS NULL").replace(new RegExp(`NULL = \\[${context.identifier}\\]$`), `[${context.identifier}] IS NULL`);
+			this.where = this.where.replace(/= NULL$/, "IS NULL").replace(new RegExp(`NULL = \\\`${context.identifier}\\\`$`), `\`${context.identifier}\` IS NULL`);
 		}
 	}
 
@@ -270,9 +270,9 @@ export class Visitor{
 		this.where += " <> ";
 		this.Visit(node.value.right, context);
 		if (this.options.useParameters && context.literal == null){
-			this.where = this.where.replace(/<> \?$/, "IS NOT NULL").replace(new RegExp(`\\? <> \\[${context.identifier}\\]$`), `[${context.identifier}] IS NOT NULL`);
+			this.where = this.where.replace(/<> \?$/, "IS NOT NULL").replace(new RegExp(`\\? <> \\\`${context.identifier}\\\`$`), `\`${context.identifier}\` IS NOT NULL`);
 		}else if (context.literal == "NULL"){
-			this.where = this.where.replace(/<> NULL$/, "IS NOT NULL").replace(new RegExp(`NULL <> \\[${context.identifier}\\]$`), `[${context.identifier}] IS NOT NULL`);
+			this.where = this.where.replace(/<> NULL$/, "IS NOT NULL").replace(new RegExp(`NULL <> \\\`${context.identifier}\\\`$`), `\`${context.identifier}\` IS NOT NULL`);
 		}
 	}
 
